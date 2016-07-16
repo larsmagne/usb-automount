@@ -1,0 +1,1 @@
+KERNEL=="sd*", SUBSYSTEMS=="usb", ENV{ID_TYPE}="disk", ENV{DEVTYPE}=="partition", ACTION=="add", PROGRAM="/bin/systemd-escape -p --template=usb-automount@.service $env{DEVNAME}", ENV{SYSTEMD_WANTS}+="%c"

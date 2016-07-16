@@ -1,0 +1,15 @@
+This tiny package enables automatically mounting exfat disks
+automatically when they are plugged into a machine.  This is slightly
+tricky because udev doesn't allow long-lived processes to be started
+from udev (and exfat is a fuse (user land) process), so we have to
+start a systemd service unit.
+
+The files should be put in the following locations:
+
+/etc/systemd/system/usb-automount@.service
+/usr/local/sbin/usb-automount
+/etc/udev/rules.d/90-usb-automount.rules
+
+This works for me on Debian jessie as of Sat Jul 16 20:16:47 CEST
+2016, but the udev/systemd people will probably change something
+during the next few minutes that will make this all break again.

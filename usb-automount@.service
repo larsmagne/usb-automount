@@ -1,0 +1,11 @@
+[Unit]
+Description=Automatically mount USB devices
+BindTo=%i.device
+After=%i.device
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/usb-automount add /%I
+ExecStop=/usr/local/sbin/usb-automount remove /%I
+RemainAfterExit=yes
+KillMode=none

@@ -1,0 +1,49 @@
+#!/bin/bash
+
+command="$1"
+device="$2"
+
+if [ "$device" = "" ]; then
+    echo "No device specified"
+    exit
+fi
+
+label=$(blkid -o export "$device" | grep "^LABEL=" | sed 's/^LABEL=//' |\
+	       sed 's/[^0-9a-zA-Z]//g')
+
+# Prefer using the partition label, if any, but fall back on the
+# device name if not.
+if [ "$label" = "" ]; then
+    name=$(basename "$device")
+else
+    name="$label"
+fi
+
+usb="/media/$name"
+suffix=""
+
+# Make sure we don't clobber any other mounted devices with the same
+# name.
+while mountpoint -q "$usb$suffix"; do
+    if [ "$suffix" = "" ]; then
+	suffix=1
+    else
+	suffix=$(($suffix + 1))
+    fi
+done
+
+rm -f /media/disk
+
+if [ "$command" = "add" ]; then
+    if [ ! -d "$usb" ]; then
+	mkdir "$usb"
+    fi
+    mount -osync,noexec,nodev,noatime,nodiratime,uid=500,gid=500,users\
+	  "$device" "$usb"
+    ln -s "$usb" /media/disk
+elif [ "$command" = "remove" ]; then
+    umount "$device"
+    if [ ! -d "$usb" ]; then
+	rmdir "$usb"
+    fi
+fi
