@@ -38,6 +38,7 @@ if [ "$command" = "add" ]; then
     if [ ! -d "$usb" ]; then
 	mkdir "$usb"
     fi
+    # Adjust this command to fit your needs.
     mount -osync,noexec,nodev,noatime,nodiratime,uid=500,gid=500,users\
 	  "$device" "$usb"
     ln -s "$usb" /media/disk
